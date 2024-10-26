@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibeshift</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <style>
+        /* Your existing CSS code here */
+    </style>
+</head>
+<body>
+    <!-- Main Content and Popup Structure -->
+    <div class="glitch" data-text="Vibeshift">Vibeshift</div>
+    <p>A shift in the rhythm of reality. Are you ready?</p>
+    <button class="cta" onclick="showPopup()">Stay Tuned</button>
+    <div class="overlay" id="overlay" onclick="hidePopup()"></div>
+    <div class="popup" id="popup">
+        <h2>Join the Shift</h2>
+        <p>Enter your email to be part of something extraordinary.</p>
+        <input type="email" id="emailInput" placeholder="Your email" required>
+        <button onclick="submitEmail()">Subscribe</button>
+        <p id="message" style="color: #00eaff; font-size: 0.9em; margin-top: 0.5em;"></p>
+    </div>
+
+    <!-- Firebase Initialization and Script for Saving Emails -->
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+     apiKey: "AIzaSyCJT4PBJ5fb2k4LoC7tCoR0W0qzlo02_qg",
+  authDomain: "vibeshift-5f4a5.firebaseapp.com",
+  projectId: "vibeshift-5f4a5",
+  storageBucket: "vibeshift-5f4a5.appspot.com",
+  messagingSenderId: "724135825112",
+  appId: "1:724135825112:web:ca8bfb97df83688ae111ad"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        function showPopup() {
+            document.getElementById("popup").style.display = "block";
+            document.getElementById("overlay").style.display = "block";
+        }
+
+        function hidePopup() {
+            document.getElementById("popup").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+        }
+
+        async function submitEmail() {
+            const emailInput = document.getElementById("emailInput").value;
+            const message = document.getElementById("message");
+
+            if (emailInput) {
+                try {
+                    // Add email to Firestore
+                    await db.collection("subscribers").add({
+                        email: emailInput,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    message.textContent = "Thank you for subscribing!";
+                    document.getElementById("emailInput").value = "";
+                } catch (error) {
+                    console.error("Error adding document: ", error);
+                    message.textContent = "Subscription failed. Please try again.";
+                }
+            } else {
+                message.textContent = "Please enter a valid email.";
+            }
+        }
+    </script>
+</body>
+</html>
